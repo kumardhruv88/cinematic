@@ -1,0 +1,1506 @@
+2:58 pmCINEMATIQ - AI-Powered Universal Streaming Recommendation Platform
+Comprehensive Project Development Report
+
+PROJECT IDENTITY
+Project Name: CINEMATIQ
+Tagline: "Your Personal Cinema Universe"
+Project Type: ML/DL-Powered Movie, Web Series & TV Show Recommendation Platform
+Target: Free, No-Login Universal Streaming Recommendation Service
+Hardware Constraint: 8GB RAM optimization required
+Dataset: MovieLens 239MB dataset
+
+EXECUTIVE SUMMARY
+CINEMATIQ is an industry-grade, AI-powered recommendation platform that provides personalized movie, web series, and TV show recommendations without requiring user authentication. Built on the MovieLens dataset and optimized for limited hardware, it employs hybrid recommendation algorithms (collaborative filtering + content-based filtering) to deliver Netflix-quality recommendations in a lightweight, accessible format.
+
+UI/UX DESIGN PHILOSOPHY
+Design Inspiration Analysis
+From Cinetaro (Image 1):
+
+Dark theme with golden accent colors (#FFD700)
+Large hero spotlight section with dramatic imagery
+Clean card-based trending section
+Minimalist top navigation
+Strong typography hierarchy
+
+From Prime Video (Image 2):
+
+Multi-row content organization
+Category-based browsing (New Movie, Recently Added)
+Hover preview cards with metadata
+Clean section headers
+Language-based filtering
+
+From XPrime (Image 3):
+
+Cinematic hero banner with gradient overlays
+Soft, organic imagery
+Minimal button design
+Information icon pattern
+Natural lighting effects
+
+From P-Stream (Image 4):
+
+Clean, modern interface
+Genre categorization
+Grid-based layout
+"In Cinemas" feature highlighting
+Professional poster displays
+
+From Netflix Reference (Image 6):
+
+Multi-row carousel design
+Category-based organization
+Hover play previews
+Quality badges (HD)
+Genre tags on cards
+
+Chosen Design Direction for CINEMATIQ
+PRIMARY DESIGN SYSTEM:
+
+Base: Dark theme with glassmorphism elements (inspired by modern web3 aesthetics)
+Color Palette:
+
+Primary: Deep Space Navy (#0A0E27)
+Secondary: Electric Purple (#7C3AED)
+Accent: Neon Cyan (#06B6D4)
+Highlight: Sunset Orange (#FB923C)
+Text: Pure White (#FFFFFF) / Light Gray (#E5E7EB)
+
+
+Typography:
+
+Headers: 'Inter' or 'Poppins' (Modern, clean sans-serif)
+Body: 'DM Sans' (Readable, professional)
+Accent: 'Bebas Neue' for dramatic titles
+
+
+
+
+COMPLETE FEATURE SPECIFICATION
+Core Features
+1. AI-Powered Recommendation Engine
+
+Hybrid recommendation system (Collaborative + Content-based)
+Real-time similarity calculation
+Genre-based filtering
+Rating-weighted recommendations
+Temporal trend analysis
+Cold-start problem handling with popularity-based fallback
+
+2. No-Login Free Access
+
+Browser session-based personalization using localStorage
+Anonymous user tracking via session IDs
+Privacy-first approach
+No data collection or storage
+Instant access without barriers
+
+3. Multi-Category Support
+
+Movies
+Web Series
+TV Shows
+Documentaries
+Trending Now
+Top Rated
+New Releases
+
+4. Advanced Search & Discovery
+
+Real-time search with autocomplete
+Multi-filter system (Genre, Year, Rating, Duration)
+Voice search capability
+Smart suggestions
+Trending searches
+
+5. Interactive UI Elements
+
+Framer Motion animations throughout
+Smooth page transitions
+Hover effects on all cards
+Loading skeleton screens
+Parallax scrolling effects
+Micro-interactions
+
+
+PAGE STRUCTURE & LAYOUT
+1. HOME PAGE (/)
+Hero Section:
+
+Full-width cinematic banner (1920x800px)
+Animated gradient background (purple to cyan)
+Featured recommendation spotlight
+Glassmorphism card overlay
+Auto-rotating featured content (5s interval)
+CTA buttons: "Watch Now" + "More Info"
+Floating particle animation background
+Title: Large, bold typography (72px)
+Description: Truncated to 2 lines with fade
+Rating badge: Top-right corner with star icon
+Duration & Genre tags
+
+Navigation Bar:
+
+Fixed top position with blur backdrop
+Logo: Left-aligned with animated icon
+Menu items: Home, Movies, Series, TV Shows, Trending
+Search icon: Expands to search bar on click
+Modern hamburger menu for mobile
+Smooth scroll spy highlighting
+Height: 80px with 20px padding
+
+Trending Section:
+
+Section title: "What's Trending" (36px, gradient text)
+Horizontal scrollable carousel
+6 cards visible at once (desktop)
+Card dimensions: 280x420px
+Hover effect: Scale 1.05 + glow
+Auto-scroll functionality
+Progress indicators
+
+Recommended for You:
+
+Personalized based on session browsing
+Grid layout: 5 columns on desktop
+Card hover: Lift effect with shadow
+Quick action buttons: Play, Add, Info
+Genre badges at bottom
+Rating overlay (top-right)
+
+Categories Section:
+
+Genre-based browsing
+Masonry grid layout
+Animated on scroll
+Icon representations for each genre
+Color-coded categories
+
+Footer:
+
+Dark gradient background
+Three columns: About, Links, Social
+Animated social icons
+Newsletter subscription (optional)
+Copyright with year auto-update
+Smooth back-to-top button
+
+2. MOVIES PAGE (/movies)
+Filter Sidebar:
+
+Fixed left sidebar (300px width)
+Glassmorphism background
+Filter options:
+
+Genre (multi-select checkboxes)
+Year (range slider)
+Rating (star selector)
+Duration (range slider)
+Sort by (dropdown)
+
+
+Apply/Reset buttons
+Animated collapse on mobile
+
+Movie Grid:
+
+Responsive grid: 4-3-2-1 (desktop-tablet-mobile)
+Lazy loading on scroll
+Card components:
+
+Poster image (16:9 ratio)
+Title overlay on hover
+Quick actions: Play, Like, Share
+Rating badge
+Genre tags
+Year badge
+
+
+Infinite scroll pagination
+"Load More" button fallback
+
+Top Bar:
+
+Total results count
+View toggle: Grid/List
+Sort dropdown
+Search within results
+
+3. SERIES PAGE (/series)
+Layout: Similar to Movies with adaptations
+
+Episode count display
+Season selector
+"Continue Watching" section
+Latest episodes highlight
+Binge-worthy badges
+
+4. TV SHOWS PAGE (/tv-shows)
+Unique Features:
+
+Schedule calendar view
+Live/Upcoming indicators
+Network/Channel filters
+Time-slot browsing
+
+5. DETAIL PAGE (/detail/:id)
+Hero Section:
+
+Full-width backdrop (1920x600px)
+Gradient overlay
+Large poster (left): 400x600px
+Content panel (right):
+
+Title (48px, bold)
+Tagline (italic, 18px)
+Rating stars + count
+Genres (clickable badges)
+Duration, Year, Language
+Synopsis (collapsible)
+Action buttons: Play Now, Add to List, Share
+
+
+
+Information Tabs:
+
+Tab navigation: Overview, Cast, Reviews, Similar
+Smooth tab transitions
+Cast grid with photos
+Review cards with ratings
+Similar recommendations carousel
+
+Similar Content:
+
+"You Might Also Like" section
+Horizontal scroll
+Same card design as home
+AI-powered recommendations
+
+6. SEARCH RESULTS PAGE (/search)
+Search Header:
+
+Large search query display
+Result count
+Active filters display
+Clear all filters option
+
+Results Layout:
+
+Mixed content (Movies + Series + TV)
+Category separators
+Same card design
+"No results" state with suggestions
+
+
+DESIGN SPECIFICATIONS
+Glassmorphism Implementation
+Card Component:
+Background: rgba(255, 255, 255, 0.05)
+Backdrop-filter: blur(10px)
+Border: 1px solid rgba(255, 255, 255, 0.1)
+Box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3)
+Border-radius: 16px
+Nav Bar:
+Background: rgba(10, 14, 39, 0.8)
+Backdrop-filter: blur(20px)
+Border-bottom: 1px solid rgba(255, 255, 255, 0.05)
+Animation Specifications
+Framer Motion Variants:
+Page Transitions:
+
+Entry: Fade in + Slide up (0.5s ease-out)
+Exit: Fade out + Slide down (0.3s ease-in)
+
+Card Hover:
+
+Scale: 1.0 → 1.05 (0.3s spring)
+Shadow: Elevation increase
+Border glow: Cyan accent
+
+Button Interactions:
+
+Initial: Scale 1
+Hover: Scale 1.05 + glow
+Tap: Scale 0.95
+Transition: Spring (stiffness: 300)
+
+Scroll Animations:
+
+Fade in + Slide up for sections
+Stagger children by 0.1s
+Trigger at 70% viewport
+
+Background Animations:
+
+Gradient rotation: 360deg (10s linear infinite)
+Particle float: Random paths (5-15s)
+Mesh gradient: Morphing blobs (8s ease-in-out)
+
+Spacing & Layout Grid
+Container:
+
+Max-width: 1440px
+Padding: 0 80px (desktop), 0 20px (mobile)
+Margin: 0 auto
+
+Section Spacing:
+
+Vertical margin: 80px (desktop), 40px (mobile)
+Component gaps: 24px
+
+Card Gaps:
+
+Grid gap: 24px
+Carousel gap: 16px
+
+Responsive Breakpoints:
+
+Mobile: 0-640px
+Tablet: 641-1024px
+Desktop: 1025-1440px
+Large: 1441px+
+
+
+MACHINE LEARNING MODEL ARCHITECTURE
+Dataset Processing (MovieLens 239MB)
+Data Structure:
+
+movies.csv: movieId, title, genres
+ratings.csv: userId, movieId, rating, timestamp
+tags.csv: userId, movieId, tag, timestamp
+links.csv: movieId, imdbId, tmdbId
+
+Preprocessing Steps:
+
+Data Cleaning:
+
+Remove duplicates
+Handle missing values (impute or drop)
+Parse genres (split by pipe)
+Extract year from title
+Normalize ratings (0-5 scale)
+
+
+Feature Engineering:
+
+Genre one-hot encoding
+TF-IDF for title text
+User preference vectors
+Item popularity scores
+Temporal features (release year, rating year)
+Average rating per movie
+Rating count per movie
+
+
+Data Splitting:
+
+Train: 80%
+Validation: 10%
+Test: 10%
+Stratified by rating distribution
+
+
+
+Recommendation Algorithm Design
+Hybrid Approach (Optimized for 8GB RAM):
+Component 1: Collaborative Filtering (60% weight)
+
+Algorithm: Matrix Factorization (Truncated SVD)
+Dimensions: 50 latent factors
+Memory footprint: ~200MB
+Implementation: Scikit-learn TruncatedSVD
+Benefits: Captures user-item patterns
+Handles sparse matrix efficiently
+
+Component 2: Content-Based Filtering (40% weight)
+
+Algorithm: Cosine Similarity on TF-IDF
+Features: Genre + Title keywords
+Memory footprint: ~150MB
+Implementation: Scikit-learn TfidfVectorizer + cosine_similarity
+Benefits: Works for new items
+Genre-aware recommendations
+
+Model Optimization Techniques:
+
+Dimensionality Reduction:
+
+Use TruncatedSVD instead of full SVD
+Limit latent factors to 50
+Sparse matrix operations
+CSR format for storage
+
+
+Efficient Storage:
+
+Precompute similarity matrices
+Store as sparse matrices
+Cache top-N recommendations
+Use pickle for serialization
+
+
+Inference Optimization:
+
+Batch recommendation generation
+Precompute user/item vectors
+Use NumPy vectorization
+Approximate nearest neighbors (Annoy library)
+
+
+
+Model Training Pipeline
+Step 1: User-Item Matrix Construction
+
+Create sparse rating matrix (users × movies)
+Apply min-max normalization
+Convert to CSR format
+
+Step 2: Collaborative Model Training
+Algorithm: TruncatedSVD
+n_components: 50
+n_iter: 20
+random_state: 42
+Training time: ~2-3 minutes
+Step 3: Content Feature Extraction
+TF-IDF Parameters:
+max_features: 1000
+ngram_range: (1, 2)
+stop_words: 'english'
+min_df: 2
+Step 4: Similarity Computation
+
+Compute item-item cosine similarity
+Keep top 50 similar items per item
+Store in sparse matrix
+
+Step 5: Model Persistence
+
+Save models: pickle format
+File size: <500MB total
+Load time: <5 seconds
+
+Recommendation Generation Logic
+For New Users (Cold Start):
+
+Show trending content (popularity-based)
+Allow genre selection
+Use content-based filtering on selected genres
+Gradually build user profile
+
+For Returning Users (Session-Based):
+
+Track viewed items in localStorage
+Build temporary user vector
+Apply hybrid recommendation
+Blend: 60% collaborative + 40% content
+
+Recommendation Scoring:
+Final_Score = (0.6 × Collaborative_Score) + (0.4 × Content_Score)
+Apply diversity penalty to avoid filter bubble
+Boost recent/trending items by 10%
+Filter out already viewed items
+Return top 20 recommendations
+
+BACKEND ARCHITECTURE
+Technology Stack
+Framework: Flask (Python 3.9+)
+
+Lightweight, ideal for 8GB RAM
+Fast development
+Easy integration with ML libraries
+
+Core Libraries:
+
+NumPy: Matrix operations
+Pandas: Data manipulation
+Scikit-learn: ML algorithms
+SciPy: Sparse matrices
+Pickle: Model serialization
+Flask-CORS: Cross-origin requests
+Annoy: Approximate nearest neighbors
+
+Optional Enhancements:
+
+Redis: Caching (if available)
+Gunicorn: Production server
+Nginx: Reverse proxy
+
+API Endpoint Structure
+1. GET /api/recommendations
+
+Parameters: sessionId (optional), limit (default: 20), category (optional)
+Response: Array of movie objects with scores
+Caching: 5 minutes per session
+
+2. GET /api/movies
+
+Parameters: page, limit, genre, year, rating, sortBy
+Response: Paginated movie list
+Includes metadata and posters
+
+3. GET /api/search
+
+Parameters: query, type, limit
+Response: Search results with relevance scores
+Real-time filtering
+
+4. GET /api/movie/:id
+
+Response: Complete movie details
+Includes similar recommendations
+Cast and crew info (if available)
+
+5. POST /api/track
+
+Body: sessionId, movieId, action (view/like)
+Purpose: Track user behavior
+No persistent storage
+
+6. GET /api/trending
+
+Response: Top trending content
+Time-based calculation
+Cached hourly
+
+7. GET /api/genres
+
+Response: All available genres
+Static endpoint
+
+8. GET /api/stats
+
+Response: Platform statistics
+Total movies, users served, etc.
+
+Model Serving Strategy
+Initialization:
+
+Load preprocessed data on startup
+Load trained models (SVD, TF-IDF)
+Precompute similarity matrices
+Initialize recommendation cache
+
+Request Handling:
+
+Receive session ID or generate new
+Retrieve session history from memory
+Generate recommendations using hybrid model
+Apply filters and sorting
+Return cached results if available
+Cache new results for 5 minutes
+
+Memory Management:
+
+Limit cache size: 1000 sessions max
+LRU eviction policy
+Periodic garbage collection
+Monitor memory usage
+
+Performance Optimization:
+
+Use NumPy vectorization
+Batch processing where possible
+Lazy loading of movie metadata
+Compress API responses (gzip)
+
+
+FRONTEND ARCHITECTURE
+Technology Stack
+Framework: React 18 + Vite
+
+Fast build times
+Hot module replacement
+Optimized bundle size
+
+Core Libraries:
+
+React Router: Navigation
+Framer Motion: Animations
+Axios: HTTP requests
+React Query: Data fetching & caching
+Zustand: State management
+Tailwind CSS: Styling
+
+UI Components:
+
+Custom component library
+Reusable card components
+Modal system
+Toast notifications
+Loading skeletons
+
+Component Structure
+Atoms (Basic Components):
+
+Button
+Input
+Badge
+Icon
+Image (lazy loaded)
+Skeleton
+Rating
+
+Molecules (Composite Components):
+
+MovieCard
+SearchBar
+FilterPanel
+Navigation
+Footer
+GenreTag
+Carousel
+
+Organisms (Complex Components):
+
+MovieGrid
+HeroSection
+RecommendationSection
+DetailPanel
+FilterSidebar
+
+Templates:
+
+HomePage
+MoviesPage
+DetailPage
+SearchPage
+
+State Management
+Global State (Zustand):
+
+Session ID
+Viewed movies
+User preferences
+Search history
+Filter states
+
+Server State (React Query):
+
+Movie data
+Recommendations
+Search results
+Detail information
+Automatic caching and refetching
+
+Local State:
+
+Component-specific UI states
+Form inputs
+Modal visibility
+
+Routing Structure
+/ - Home
+/movies - Movies listing
+/series - Series listing
+/tv-shows - TV Shows listing
+/trending - Trending content
+/detail/:id - Content detail
+/search - Search results
+/genre/:genre - Genre-specific
+Performance Optimization
+Code Splitting:
+
+Route-based lazy loading
+Component lazy loading
+Dynamic imports
+
+Image Optimization:
+
+Lazy loading with Intersection Observer
+Progressive image loading
+Responsive images (srcset)
+WebP format with fallbacks
+Placeholder blur effect
+
+Data Fetching:
+
+Prefetch on hover
+Infinite scroll with pagination
+Debounced search
+Request deduplication
+Stale-while-revalidate strategy
+
+Bundle Optimization:
+
+Tree shaking
+Minification
+Compression (Brotli)
+Critical CSS inlining
+Font subsetting
+
+
+ANIMATION & INTERACTION SPECIFICATIONS
+Framer Motion Implementation
+Page Transitions:
+javascriptvariants = {
+  initial: { opacity: 0, y: 20 },
+  animate: { opacity: 1, y: 0, transition: { duration: 0.5, ease: "easeOut" } },
+  exit: { opacity: 0, y: -20, transition: { duration: 0.3 } }
+}
+Card Hover:
+javascriptwhileHover={{ 
+  scale: 1.05,
+  boxShadow: "0 20px 60px rgba(6, 182, 212, 0.3)",
+  transition: { type: "spring", stiffness: 300 }
+}}
+Stagger Children:
+javascriptcontainer = {
+  animate: { transition: { staggerChildren: 0.1 } }
+}
+child = {
+  initial: { opacity: 0, y: 20 },
+  animate: { opacity: 1, y: 0 }
+}
+```
+
+**Scroll Animations:**
+- Use Framer Motion's useScroll hook
+- Trigger animations at 70% viewport
+- Parallax effects on hero sections
+- Progress indicators for carousels
+
+### Background Animations
+
+**Animated Gradient:**
+- CSS keyframe animation
+- 10s infinite rotation
+- Multiple color stops
+- Smooth transitions
+
+**Particle System:**
+- Canvas-based or CSS animation
+- 20-30 floating particles
+- Random sizes and speeds
+- Gaussian blur effect
+
+**Mesh Gradient:**
+- SVG or WebGL implementation
+- Morphing blob shapes
+- Color interpolation
+- 8s ease-in-out loop
+
+### Micro-interactions
+
+**Button Feedback:**
+- Ripple effect on click
+- Color shift on hover
+- Scale on press
+- Loading spinner integration
+
+**Form Interactions:**
+- Input focus glow
+- Validation shake
+- Success checkmark animation
+- Error highlight
+
+**Navigation:**
+- Smooth scroll to sections
+- Active link indicator slide
+- Mobile menu slide-in
+- Submenu accordion
+
+---
+
+## COLOR SYSTEM & THEMING
+
+### Color Palette (Dark Theme)
+
+**Primary Colors:**
+- Navy: #0A0E27 (Background)
+- Deep Purple: #1E1B4B (Surface)
+- Electric Purple: #7C3AED (Primary action)
+- Neon Cyan: #06B6D4 (Accent)
+- Sunset Orange: #FB923C (Highlight)
+
+**Neutral Colors:**
+- White: #FFFFFF (Headings)
+- Light Gray: #E5E7EB (Body text)
+- Medium Gray: #9CA3AF (Secondary text)
+- Dark Gray: #374151 (Borders)
+
+**Semantic Colors:**
+- Success: #10B981
+- Warning: #F59E0B
+- Error: #EF4444
+- Info: #3B82F6
+
+**Gradient Combinations:**
+1. Purple-Cyan: #7C3AED → #06B6D4
+2. Orange-Pink: #FB923C → #EC4899
+3. Blue-Purple: #3B82F6 → #7C3AED
+
+### Typography Scale
+
+**Headers:**
+- H1: 72px / Bold / 1.1 line-height
+- H2: 48px / Bold / 1.2 line-height
+- H3: 36px / Semibold / 1.3 line-height
+- H4: 24px / Semibold / 1.4 line-height
+- H5: 20px / Medium / 1.5 line-height
+
+**Body:**
+- Large: 18px / Regular / 1.6 line-height
+- Default: 16px / Regular / 1.6 line-height
+- Small: 14px / Regular / 1.5 line-height
+- Tiny: 12px / Regular / 1.4 line-height
+
+**Special:**
+- Button: 16px / Semibold / Uppercase / 1.5 letter-spacing
+- Caption: 12px / Medium / Uppercase / 2px letter-spacing
+
+---
+
+## RESPONSIVE DESIGN SPECIFICATIONS
+
+### Mobile (0-640px)
+
+**Navigation:**
+- Hamburger menu
+- Full-screen overlay
+- Stacked menu items
+
+**Hero:**
+- Reduced height: 500px
+- Single column layout
+- Smaller typography (36px title)
+
+**Cards:**
+- 1 column grid
+- Full-width cards
+- Compact information
+
+**Spacing:**
+- Section margin: 40px
+- Container padding: 20px
+- Card gaps: 16px
+
+### Tablet (641-1024px)
+
+**Navigation:**
+- Hybrid menu (some items visible)
+- Collapsible sections
+
+**Hero:**
+- Height: 600px
+- Two-column layout option
+
+**Cards:**
+- 2-3 column grid
+- Medium-sized cards
+
+**Spacing:**
+- Section margin: 60px
+- Container padding: 40px
+- Card gaps: 20px
+
+### Desktop (1025px+)
+
+**Navigation:**
+- Full horizontal menu
+- Dropdown submenus
+
+**Hero:**
+- Full height: 800px
+- Multi-column layouts
+
+**Cards:**
+- 4-5 column grid
+- Full feature display
+
+**Spacing:**
+- Section margin: 80px
+- Container padding: 80px
+- Card gaps: 24px
+
+---
+
+## PROJECT FILE STRUCTURE
+```
+cinematiq/
+│
+├── backend/
+│   ├── app.py                      # Flask application entry
+│   ├── config.py                   # Configuration settings
+│   ├── requirements.txt            # Python dependencies
+│   │
+│   ├── models/
+│   │   ├── __init__.py
+│   │   ├── collaborative.py        # SVD model
+│   │   ├── content_based.py        # TF-IDF model
+│   │   └── hybrid.py               # Hybrid recommender
+│   │
+│   ├── data/
+│   │   ├── raw/                    # MovieLens dataset
+│   │   ├── processed/              # Cleaned data
+│   │   └── models/                 # Trained model files
+│   │
+│   ├── preprocessing/
+│   │   ├── __init__.py
+│   │   ├── cleaner.py              # Data cleaning
+│   │   ├── feature_engineering.py # Feature creation
+│   │   └── loader.py               # Data loading
+│   │
+│   ├── api/
+│   │   ├── __init__.py
+│   │   ├── routes.py               # API endpoints
+│   │   ├── recommendations.py      # Recommendation logic
+│   │   └── utils.py                # Helper functions
+│   │
+│   └── cache/
+│       └── session_cache.py        # Session management
+│
+├── frontend/
+│   ├── public/
+│   │   ├── index.html
+│   │   ├── favicon.ico
+│   │   └── assets/                 # Static images
+│   │
+│   ├── src/
+│   │   ├── main.jsx                # React entry point
+│   │   ├── App.jsx                 # Root component
+│   │   │
+│   │   ├── pages/
+│   │   │   ├── Home.jsx
+│   │   │   ├── Movies.jsx
+│   │   │   ├── Series.jsx
+│   │   │   ├── TVShows.jsx
+│   │   │   ├── Detail.jsx
+│   │   │   ├── Search.jsx
+│   │   │   └── Trending.jsx
+│   │   │
+│   │   ├── components/
+│   │   │   ├── layout/
+│   │   │   │   ├── Navigation.jsx
+│   │   │   │   ├── Footer.jsx
+│   │   │   │   └── Container.jsx
+│   │   │   │
+│   │   │   ├── common/
+│   │   │   │   ├── Button.jsx
+│   │   │   │   ├── Input.jsx
+│   │   │   │   ├── Badge.jsx
+│   │   │   │   ├── Icon.jsx
+│   │   │   │   ├── Skeleton.jsx
+│   │   │   │   └── Rating.jsx
+│   │   │   │
+│   │   │   ├── movie/
+│   │   │   │   ├── MovieCard.jsx
+│   │   │   │   ├── MovieGrid.jsx
+│   │   │   │   ├── MovieCarousel.jsx
+│   │   │   │   └── MovieDetail.jsx
+│   │   │   │
+│   │   │   ├── hero/
+│   │   │   │   ├── HeroSection.jsx
+│   │   │   │   └── HeroSlider.jsx
+│   │   │   │
+│   │   │   └── filter/
+│   │   │       ├── FilterSidebar.jsx
+│   │   │       └── FilterChip.jsx
+│   │   │
+│   │   ├── hooks/
+│   │   │   ├── useRecommendations.js
+│   │   │   ├── useMovies.js
+│   │   │   ├── useSearch.js
+│   │   │   └── useSession.js
+│   │   │
+│   │   ├── store/
+│   │   │   ├── sessionStore.js
+│   │   │   ├── filterStore.js
+│   │   │   └── uiStore.js
+│   │   │
+│   │   ├── utils/
+│   │   │   ├── api.js              # API client
+│   │   │   ├── formatters.js       # Data formatters
+│   │   │   └── constants.js        # Constants
+│   │   │
+│   │   ├── styles/
+│   │   │   ├── index.css           # Global styles
+│   │   │   └── animations.css      # Animation definitions
+│   │   │
+│   │   └── animations/
+│   │       ├── variants.js         # Framer Motion variants
+│   │       └── transitions.js      # Transition configs
+│   │
+│   ├── package.json
+│   ├── vite.config.js
+│   ├── tailwind.config.js
+│   └── postcss.config.js
+│
+├── notebooks/
+│   ├── 01_data_exploration.ipynb
+│   ├── 02_model_training.ipynb
+│   └── 03_evaluation.ipynb
+│
+├── docs/
+│   ├── API.md                      # API documentation
+│   ├── SETUP.md                    # Setup instructions
+│   └── ARCHITECTURE.md             # Architecture details
+│
+├── .gitignore
+├── README.md
+└── docker-compose.yml              # Optional containerization
+```
+
+---
+
+## DEVELOPMENT WORKFLOW
+
+### Phase 1: Data Processing & Model Training (Week 1)
+
+**Day 1-2: Data Exploration**
+- Load MovieLens dataset
+- Analyze distributions
+- Identify data quality issues
+- Document findings
+
+**Day 3-4: Preprocessing**
+- Clean data
+- Engineer features
+- Create train/test splits
+- Save processed data
+
+**Day 5-6: Model Development**
+- Implement SVD model
+- Implement content-based model
+- Train both models
+- Evaluate performance
+
+**Day 7: Model Optimization**
+- Optimize hyperparameters
+- Reduce memory footprint
+- Test inference speed
+- Save final models
+
+### Phase 2: Backend Development (Week 2)
+
+**Day 1-2: Flask Setup**
+- Initialize Flask app
+- Create API routes
+- Implement model loading
+- Set up CORS
+
+**Day 3-4: API Development**
+- Recommendation endpoint
+- Search endpoint
+- Filter endpoint
+- Movie detail endpoint
+
+**Day 5-6: Optimization**
+- Add caching
+- Optimize queries
+- Test performance
+- Handle edge cases
+
+**Day 7: Testing**
+- Unit tests
+- Integration tests
+- Load testing
+- Bug fixes
+
+### Phase 3: Frontend Development (Week 3-4)
+
+**Week 3:**
+**Day 1-2: Setup & Routing**
+- Initialize React + Vite
+- Configure Tailwind
+- Set up React Router
+- Create page structure
+
+**Day 3-4: Common Components**
+- Build atom components
+- Create molecule components
+- Implement animations
+- Test responsiveness
+
+**Day 5-7: Home Page**
+- Hero section
+- Navigation
+- Recommendation sections
+- Trending carousel
+- Footer
+
+**Week 4:**
+**Day 1-2: Content Pages**
+- Movies page
+- Series page
+- TV Shows page
+- Filter functionality
+
+**Day 3-4: Detail Page**
+- Layout design
+- Data integration
+- Similar recommendations
+- Interactive elements
+
+**Day 5-6: Search & Polish**
+- Search functionality
+- Loading states
+- Error handling
+- Performance optimization
+
+**Day 7: Testing & Deployment**
+- Cross-browser testing
+- Mobile testing
+- Accessibility check
+- Deploy to hosting
+
+---
+
+## DEPLOYMENT STRATEGY
+
+### Backend Deployment
+
+**Platform Options:**
+- Render (Free tier, 512MB RAM)
+- Railway (Free tier, limited hours)
+- PythonAnywhere (Free tier, limited)
+- Heroku (Paid)
+
+**Deployment Steps:**
+1. Create requirements.txt
+2. Add Procfile (Gunicorn)
+3. Configure environment variables
+4. Set up database (if needed)
+5. Deploy and test
+
+**Optimization for Free Hosting:**
+- Use smaller model dimensions
+- Aggressive caching
+- Request rate limiting
+- Lazy model loading
+
+### Frontend Deployment
+
+**Platform:** Vercel / Netlify (Free tier)
+
+**Build Configuration:**
+```
+Build command: npm run build
+Output directory: dist
+Node version: 18.x
+Environment Variables:
+
+VITE_API_URL:
+Continue3:01 pmBackend API endpoint
+
+VITE_APP_NAME: CINEMATIQ
+VITE_TMDB_API_KEY: (if using external API)
+
+Performance:
+
+Enable compression
+Configure caching headers
+Set up CDN
+Optimize images
+
+
+TESTING STRATEGY
+Backend Testing
+Unit Tests:
+
+Model prediction accuracy
+Data preprocessing functions
+API endpoint responses
+Caching mechanisms
+
+Integration Tests:
+
+Full recommendation pipeline
+API request/response flow
+Model serving performance
+
+Performance Tests:
+
+Response time (<500ms target)
+Concurrent users (100 target)
+Memory usage (<2GB target)
+
+Frontend Testing
+Component Tests:
+
+Render tests
+Interaction tests
+Animation tests
+Responsive tests
+
+E2E Tests:
+
+User flow testing
+Search functionality
+Recommendation display
+Navigation flow
+
+Performance Tests:
+
+Lighthouse score (>90 target)
+Core Web Vitals
+Bundle size (<500KB)
+Load time (<3s)
+
+
+MONITORING & ANALYTICS
+Performance Monitoring
+Metrics to Track:
+
+API response times
+Model inference time
+Memory usage
+Error rates
+Uptime percentage
+
+Tools:
+
+Backend: Custom logging
+Frontend: Web Vitals API
+Errors: Console logging
+Usage: Google Analytics (optional)
+
+User Analytics (Privacy-First)
+Track Anonymously:
+
+Popular content
+Search queries (aggregated)
+Feature usage
+Session duration
+
+Do NOT Track:
+
+Personal information
+IP addresses
+Detailed browsing history
+Location data
+
+
+FUTURE ENHANCEMENTS
+Phase 2 Features (Post-Launch)
+User Accounts (Optional):
+
+Save favorites
+Watch history
+Custom lists
+Cross-device sync
+
+Advanced Recommendations:
+
+Deep learning model (if resources allow)
+Real-time trending analysis
+Social recommendations
+Mood-based filtering
+
+Content Expansion:
+
+Integration with TMDB API for metadata
+Trailer integration
+Actor/Director pages
+Review system
+
+Technical Improvements:
+
+GraphQL API
+Real-time updates (WebSockets)
+Progressive Web App
+Offline support
+
+Scalability Considerations
+If Traffic Grows:
+
+Migrate to cloud infrastructure
+Implement Redis caching
+Use CDN for static assets
+Database optimization
+Microservices architecture
+
+
+ACCESSIBILITY STANDARDS
+WCAG 2.1 AA Compliance
+Color Contrast:
+
+Text: Minimum 4.5:1 ratio
+Large text: Minimum 3:1 ratio
+UI components: Minimum 3:1 ratio
+
+Keyboard Navigation:
+
+All interactive elements focusable
+Visible focus indicators
+Logical tab order
+Skip navigation links
+
+Screen Reader Support:
+
+Semantic HTML
+ARIA labels
+Alt text for images
+Descriptive link text
+
+Motion & Animation:
+
+Respect prefers-reduced-motion
+Provide pause controls
+No auto-play videos
+Timeout warnings
+
+
+SEO OPTIMIZATION
+Technical SEO
+Meta Tags:
+
+Unique titles per page
+Descriptive meta descriptions
+Open Graph tags
+Twitter Cards
+
+Structure:
+
+Semantic HTML5
+Proper heading hierarchy
+Clean URL structure
+XML sitemap
+
+Performance:
+
+Fast load times
+Mobile-friendly
+HTTPS enabled
+No broken links
+
+Content SEO
+Strategy:
+
+Unique content per movie
+Keyword optimization
+Internal linking
+Fresh content updates
+
+
+SECURITY MEASURES
+Backend Security
+API Protection:
+
+Rate limiting
+Input validation
+SQL injection prevention
+CORS configuration
+
+Data Security:
+
+No sensitive data storage
+Session-based tracking only
+Encrypted connections (HTTPS)
+Regular dependency updates
+
+Frontend Security
+Best Practices:
+
+XSS prevention
+CSRF protection
+Content Security Policy
+Secure dependencies
+
+
+BRANDING GUIDELINES
+Logo Design Concept
+Style: Modern, geometric
+Elements:
+
+Film reel icon stylized
+Gradient purple to cyan
+Clean sans-serif wordmark
+Scalable vector format
+
+Usage:
+
+Light version for dark backgrounds
+Dark version for light backgrounds
+Icon-only version for small spaces
+Monochrome version for print
+
+Tone of Voice
+Characteristics:
+
+Friendly but professional
+Enthusiastic about cinema
+Helpful and informative
+Modern and accessible
+
+Example Copy:
+
+"Discover your next favorite"
+"Powered by AI, crafted for you"
+"Cinema reimagined"
+"Your personal movie companion"
+
+
+SUCCESS METRICS
+Key Performance Indicators
+User Engagement:
+
+Daily active users
+Average session duration
+Pages per session
+Return visitor rate
+
+Recommendation Quality:
+
+Click-through rate on recommendations
+User satisfaction (feedback)
+Recommendation diversity
+Coverage (% of catalog recommended)
+
+Technical Performance:
+
+Average response time <500ms
+99% uptime
+<2GB RAM usage
+Lighthouse score >90
+
+Business Metrics:
+
+Total recommendations served
+Search queries processed
+Content views
+Growth rate
+
+
+CONCLUSION
+CINEMATIQ represents a comprehensive, production-ready streaming recommendation platform that balances cutting-edge AI capabilities with practical hardware constraints. The project combines industry-standard machine learning techniques, modern web development practices, and user-centric design to deliver a free, accessible movie discovery experience.
+Key Differentiators:
+
+No-login, privacy-first approach
+Hybrid ML recommendation system
+Premium UI/UX with glassmorphism and animations
+Optimized for limited hardware (8GB RAM)
+Industry-grade architecture and code quality
+Comprehensive documentation
+
+Target Outcome:
+A fully functional, visually stunning, AI-powered recommendation platform that users can access freely without barriers, demonstrating professional-level development capabilities and machine learning expertise.
+
+IMPLEMENTATION NOTES FOR ANTIGRAVITY
+Critical Requirements:
+
+Use exact color codes provided - no variations
+Implement all Framer Motion animations - smooth, professional feel
+Follow responsive breakpoints precisely - mobile-first approach
+Optimize bundle size - code splitting, lazy loading mandatory
+Test on 8GB RAM constraint - model must fit in memory
+Glassmorphism must be prominent - defining visual feature
+No localStorage for ML state - session-based only
+API responses must be cached - reduce backend load
+Loading states for everything - never show blank screens
+Accessibility is non-negotiable - WCAG 2.1 AA minimum
+
+Design Priority Order:
+
+Visual polish (animations, glassmorphism, typography)
+Recommendation quality (hybrid model performance)
+Performance (load times, bundle size)
+Responsive design (mobile experience)
+Accessibility (keyboard nav, screen readers)
+
+Tech Stack Finalization:
+
+Backend: Flask + NumPy + Scikit-learn + Pickle
+Frontend: React + Vite + Tailwind + Framer Motion + React Query + Zustand
+Deployment: Vercel (frontend) + Render (backend)
+
+This comprehensive specification provides all details needed to build CINEMATIQ from scratch, ensuring consistency, quality, and professional execution across all aspects of the project.
