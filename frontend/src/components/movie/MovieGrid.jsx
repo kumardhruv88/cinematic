@@ -5,8 +5,8 @@ import MovieCard from '../movie/MovieCard';
 const MovieGrid = ({ movies, isLoading }) => {
     if (isLoading) {
         return (
-            <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
-                {Array(8).fill(null).map((_, i) => (
+            <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6 gap-6">
+                {Array(12).fill(null).map((_, i) => (
                     <div key={i} className="aspect-[2/3] bg-white/5 rounded-2xl animate-pulse" />
                 ))}
             </div>
@@ -24,7 +24,7 @@ const MovieGrid = ({ movies, isLoading }) => {
     }
 
     return (
-        <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
+        <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6 gap-6">
             {movies.map((movie, index) => (
                 <motion.div
                     key={movie.movieId}

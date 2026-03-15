@@ -1,9 +1,22 @@
-import React from 'react';
-import { motion } from 'framer-motion';
+import React, { useState, useEffect } from 'react';
+import { motion, AnimatePresence } from 'framer-motion';
 import { Play, Info } from 'lucide-react';
+import { useNavigate } from 'react-router-dom';
 import Container from '../layout/Container';
 
-const HeroSection = ({ movie }) => {
+const HeroSection = ({ movies = [] }) => {
+    const [currentIndex, setCurrentIndex] = useState(0);
+    const navigate = useNavigate();
+
+    useEffect(() => {
+        if (!movies || movies.length <= 1) return;
+        const interval = setInterval(() => {
+            setCurrentIndex((prevIndex) => (prevIndex + 1) % movies.length);
+        }, 8000); // 8 second interval for better readability
+
+        return () => clearInterval(interval);
+    }, [movies]);
+
     // Placeholder content if no movie is provided
     const defaultMovie = {
         title: "Interstellar",
@@ -14,67 +27,76 @@ const HeroSection = ({ movie }) => {
         image: "https://image.tmdb.org/t/p/original/rAiYTfKGqDCRIIqo664sY9XZIvQ.jpg"
     };
 
-    const featured = movie ? {
-        title: movie.title,
-        description: movie.description || "No description available.",
-        year: movie.year || "N/A",
-        rating: movie.vote_average || movie.rating || "N/A",
-        // genres might be array of strings or objects depending on backend, handle carefully
-        genre: movie.genres || [],
-        image: movie.posterPath ? movie.posterPath.replace("w500", "original") : defaultMovie.image
-        // Note: TMDB images in posterPath are usually w500. We might want higher res for Hero.
-        // If the backend sends full URL "https://image.tmdb.org/t/p/w500/...", we can replace w500 with original.
+    const currentMovie = movies && movies.length > 0 ? movies[currentIndex % movies.length] : null;
+
+    const featured = currentMovie ? {
+        id: currentMovie.movieId,
+        title: currentMovie.title,
+        description: currentMovie.description || "No description available.",
+        year: currentMovie.year || "N/A",
+        rating: currentMovie.vote_average || currentMovie.rating || "N/A",
+        genre: currentMovie.genres || [],
+        image: currentMovie.posterPath ? currentMovie.posterPath.replace("w500", "original") : defaultMovie.image
     } : defaultMovie;
 
     return (
         <div className="relative h-[80vh] min-h-[600px] w-full overflow-hidden">
-            {/* Background Image */}
-            <div
-                className="absolute inset-0 bg-cover bg-center bg-no-repeat"
-                style={{ backgroundImage: `url(${featured.image})` }}
-            >
-                {/* Gradient Overlay */}
-                <div className="absolute inset-0 bg-gradient-to-r from-[#0A0E27] via-[#0A0E27]/60 to-transparent" />
-                <div className="absolute inset-0 bg-gradient-to-t from-[#0A0E27] via-transparent to-transparent" />
-            </div>
-
-            <Container className="relative h-full flex flex-col justify-center">
+            <AnimatePresence mode="wait">
+                {/* Background Image */}
                 <motion.div
-                    initial={{ opacity: 0, y: 30 }}
-                    animate={{ opacity: 1, y: 0 }}
-                    transition={{ duration: 0.8, ease: "easeOut" }}
-                    className="max-w-2xl"
-                >
+                    key={featured.image}
+                    initial={{ opacity: 0 }}
+                    animate={{ opacity: 1 }}
+                    exit={{ opacity: 0 }}
+                    transition={{ duration: 1 }}
+                    className="absolute inset-0 bg-cover bg-center bg-no-repeat"
+                    style={{ backgroundImage: `url(${featured.image})` }}
+                />
+            </AnimatePresence>
+            
+            {/* Gradient Overlay */}
+            <div className="absolute inset-0 bg-[#0A0E27]/40"></div>
+            <div className="absolute inset-0 bg-gradient-to-r from-[#0A0E27] via-[#0A0E27]/80 to-transparent" />
+            <div className="absolute inset-0 bg-gradient-to-t from-[#0A0E27] via-[#0A0E27]/20 to-transparent" />
+
+            <Container className="relative h-full flex flex-col justify-center pt-24">
+                <AnimatePresence mode="wait">
                     <motion.div
-                        initial={{ opacity: 0 }}
-                        animate={{ opacity: 1 }}
-                        transition={{ delay: 0.5 }}
-                        className="flex items-center gap-3 mb-4"
+                        key={featured.title}
+                        initial={{ opacity: 0, y: 30 }}
+                        animate={{ opacity: 1, y: 0 }}
+                        exit={{ opacity: 0, y: -30 }}
+                        transition={{ duration: 0.8, ease: "easeOut" }}
+                        className="max-w-2xl"
                     >
-                        <span className="px-3 py-1 bg-accent-purple/20 border border-accent-purple/30 text-accent-purple text-xs font-bold rounded-full uppercase tracking-wider">
-                            Featured
-                        </span>
-                        <div className="flex items-center gap-2 text-yellow-500">
-                            <span>★ {featured.rating}</span>
+                        <div className="flex items-center gap-3 mb-4">
+                            <span className="px-3 py-1 bg-accent-purple/20 border border-accent-purple/30 text-accent-purple text-xs font-bold rounded-full uppercase tracking-wider">
+                                Featured
+                            </span>
+                            <div className="flex items-center gap-2 text-yellow-500">
+                                <span>★ {featured.rating}</span>
+                            </div>
+                            <span className="text-gray-300">• {featured.year}</span>
                         </div>
-                        <span className="text-gray-300">• {featured.year}</span>
+
+                        <h1 className="text-5xl md:text-7xl font-bold text-white mb-6 leading-tight tracking-tight">
+                            {featured.title}
+                        </h1>
+
+                        <p className="text-lg text-gray-300 mb-10 line-clamp-3 leading-relaxed">
+                            {featured.description}
+                        </p>
+
+                        <div className="flex flex-wrap gap-4">
+                            <button 
+                                onClick={() => navigate(`/movie/${featured.id}`)}
+                                className="flex items-center gap-2 px-8 py-4 bg-accent-purple hover:bg-accent-purple/90 text-white rounded-xl font-semibold transition-all hover:scale-105 active:scale-95 shadow-[0_0_20px_rgba(124,58,237,0.3)]">
+                                <Info size={20} fill="currentColor" />
+                                View Details
+                            </button>
+                        </div>
                     </motion.div>
-
-                    <h1 className="text-5xl md:text-7xl font-bold text-white mb-6 leading-tight tracking-tight">
-                        {featured.title}
-                    </h1>
-
-                    <p className="text-lg text-gray-300 mb-10 line-clamp-3 leading-relaxed">
-                        {featured.description}
-                    </p>
-
-                    <div className="flex flex-wrap gap-4">
-                        <button className="flex items-center gap-2 px-8 py-4 bg-accent-purple hover:bg-accent-purple/90 text-white rounded-xl font-semibold transition-all hover:scale-105 active:scale-95 shadow-[0_0_20px_rgba(124,58,237,0.3)]">
-                            <Info size={20} fill="currentColor" />
-                            View Details
-                        </button>
-                    </div>
-                </motion.div>
+                </AnimatePresence>
             </Container>
 
             {/* Scroll Indicator */}

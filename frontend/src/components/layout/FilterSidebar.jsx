@@ -164,22 +164,20 @@ const FilterSidebar = ({
                         animate={{ opacity: 1 }}
                         exit={{ opacity: 0 }}
                         onClick={onClose}
-                        className="fixed inset-0 bg-black/60 backdrop-blur-sm z-40 lg:hidden"
+                        className="fixed inset-0 bg-black/60 backdrop-blur-sm z-40"
                     />
 
                     {/* Sidebar Pane */}
                     <motion.aside
-                        variants={sidebarVariants}
-                        initial="closed"
-                        animate="open"
-                        exit="closed" // Ensure exit works for mobile
+                        initial={{ x: '100%' }}
+                        animate={{ x: 0 }}
+                        exit={{ x: '100%' }}
                         transition={{ type: "spring", bounce: 0, duration: 0.4 }}
                         className={`
-                            fixed inset-y-0 left-0 z-50
-                            w-[280px] bg-[#0A0E27]/95
-                            border-r border-white/10
+                            fixed inset-y-0 right-0 z-50
+                            w-[320px] bg-[#0A0E27] shadow-[-10px_0_30px_rgba(0,0,0,0.5)]
+                            border-l border-white/10
                             p-6 overflow-y-auto
-                            lg:hidden
                         `}
                     >
                         <div className="flex items-center justify-between mb-6">

@@ -24,13 +24,13 @@ const Section = ({ title, movies, layout = 'grid', headerAction, children, isLoa
             {children}
 
             {isLoading ? (
-                <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-6">
-                    {Array(5).fill(null).map((_, i) => (
+                <div className="grid grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6 gap-6">
+                    {Array(6).fill(null).map((_, i) => (
                         <div key={i} className="aspect-[2/3] bg-white/5 rounded-2xl animate-pulse" />
                     ))}
                 </div>
             ) : layout === 'grid' ? (
-                <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-6">
+                <div className="grid grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6 gap-6">
                     {movies.map((movie, index) => (
                         <motion.div
                             key={movie.movieId}
@@ -98,22 +98,38 @@ const Home = () => {
         keepPreviousData: true
     });
 
-    const trending = trendingData?.status === 'success' ? trendingData.data : [];
-    const recommended = recData?.status === 'success' ? recData.data : [];
-    const isLoading = trendingLoading || recLoading;
+    // Fetch Action Movies
+    const { data: actionData, isLoading: actionLoading } = useQuery({
+        queryKey: ['movies', 'Action'],
+        queryFn: async () => {
+            const res = await fetch('/api/movies?genre=Action&limit=15&sortBy=popularity');
+            return res.json();
+        },
+        staleTime: 60 * 60 * 1000,
+    });
 
-    // Select a featured movie from trending (random)
-    const featuredMovie = useMemo(() => {
-        if (trending.length > 0) {
-            const randomIndex = Math.floor(Math.random() * trending.length);
-            return trending[randomIndex];
-        }
-        return null;
-    }, [trendingData]);
+    // Fetch Romance Movies
+    const { data: romanceData, isLoading: romanceLoading } = useQuery({
+        queryKey: ['movies', 'Romance'],
+        queryFn: async () => {
+            const res = await fetch('/api/movies?genre=Romance&limit=15&sortBy=popularity');
+            return res.json();
+        },
+        staleTime: 60 * 60 * 1000,
+    });
+
+    const hasValidPoster = (m) => m && m.posterPath && m.posterPath !== "N/A" && typeof m.posterPath === 'string' && m.posterPath.trim() !== "";
+
+    const trending = trendingData?.data && Array.isArray(trendingData.data) ? trendingData.data.filter(hasValidPoster) : [];
+    const recommended = recData?.data && Array.isArray(recData.data) ? recData.data.filter(hasValidPoster) : [];
+    const actionMovies = actionData?.data && Array.isArray(actionData.data) ? actionData.data.filter(hasValidPoster) : [];
+    const romanceMovies = romanceData?.data && Array.isArray(romanceData.data) ? romanceData.data.filter(hasValidPoster) : [];
+    
+    const isLoading = trendingLoading || recLoading;
 
     return (
         <div className="bg-[#0A0E27] min-h-screen pb-20">
-            <HeroSection movie={featuredMovie} />
+            <HeroSection movies={trending.slice(0, 10)} />
 
             <div className="mt-[-100px] relative z-10">
                 <Section title="Trending Now" movies={trending} layout="carousel" />
@@ -174,6 +190,14 @@ const Home = () => {
                     </motion.div>
                 </div>
             </Section>
+
+            {actionMovies.length > 0 && (
+                <Section title="Action Packed" movies={actionMovies} layout="carousel" isLoading={actionLoading} />
+            )}
+
+            {romanceMovies.length > 0 && (
+                <Section title="Romantic Favorites" movies={romanceMovies} layout="carousel" isLoading={romanceLoading} />
+            )}
 
             <Section title="New Releases" movies={trending.slice().reverse()} layout="carousel" />
         </div>

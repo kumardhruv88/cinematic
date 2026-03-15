@@ -35,6 +35,7 @@ yarn-error.log*
 
 # Data (Don't upload large raw datasets if possible, but for this starter it's fine unless >100MB)
 backend/data/raw/*.csv
+!backend/data/raw/links.csv
 # Keep processed metadata if needed for cold start, or generate on build
 # backend/data/processed/
 

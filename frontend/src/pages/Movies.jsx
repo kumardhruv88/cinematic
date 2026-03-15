@@ -7,7 +7,7 @@ import MovieGrid from '../components/movie/MovieGrid';
 
 const Movies = () => {
     // State
-    const [isSidebarOpen, setIsSidebarOpen] = useState(true); // Default open for better visibility
+    const [isSidebarOpen, setIsSidebarOpen] = useState(false); // Default hidden for clear initial view
     const [page, setPage] = useState(1);
 
     // Filters
@@ -34,7 +34,7 @@ const Movies = () => {
         queryFn: async () => {
             const params = new URLSearchParams({
                 page,
-                limit: 20,
+                limit: 60,
                 rating,
                 sortBy,
                 duration
@@ -49,7 +49,8 @@ const Movies = () => {
         keepPreviousData: true
     });
 
-    const movies = data?.data || [];
+    const hasValidPoster = (m) => m && m.posterPath && m.posterPath !== "N/A" && typeof m.posterPath === 'string' && m.posterPath.trim() !== "";
+    const movies = (data?.data || []).filter(hasValidPoster);
     const totalPages = data?.pages || 1;
 
     // Handlers
@@ -100,28 +101,20 @@ const Movies = () => {
                     </div>
                 </div>
 
-                {/* Collapsible Filter Panel */}
-                <div className="overflow-hidden mb-6">
-                    <div
-                        className={`transition-all duration-300 ease-in-out ${isSidebarOpen ? 'max-h-[1000px] opacity-100' : 'max-h-0 opacity-0'}`}
-                    >
-                        <div className="bg-[#1E1B4B]/30 border border-white/10 rounded-xl p-6">
-                            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-                                <FilterContent
-                                    genres={genres}
-                                    selectedGenres={selectedGenres}
-                                    onGenreChange={handleGenreChange}
-                                    rating={rating}
-                                    onRatingChange={setRating}
-                                    year={year}
-                                    onYearChange={setYear}
-                                    duration={duration}
-                                    onDurationChange={setDuration}
-                                />
-                            </div>
-                        </div>
-                    </div>
-                </div>
+                {/* Side Drawer Filter */}
+                <FilterSidebar 
+                    isOpen={isSidebarOpen}
+                    onClose={() => setIsSidebarOpen(false)}
+                    genres={genres}
+                    selectedGenres={selectedGenres}
+                    onGenreChange={handleGenreChange}
+                    rating={rating}
+                    onRatingChange={setRating}
+                    year={year}
+                    onYearChange={setYear}
+                    duration={duration}
+                    onDurationChange={setDuration}
+                />
 
                 <div className="flex gap-8">
                     {/* Mobile Sidebar (Only renders overlay on mobile if open, but logic handled by FilterSidebar component if we kept it) */}
