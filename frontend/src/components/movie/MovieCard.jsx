@@ -35,8 +35,8 @@ const MovieCard = ({ movie }) => {
                     />
 
                     {/* Overlay on Hover */}
-                    <div className="absolute inset-0 bg-black/60 opacity-0 group-hover/card:opacity-100 transition-opacity duration-300 flex flex-col items-center justify-end pb-6">
-                        <span className="px-4 py-2 border border-accent-cyan text-accent-cyan rounded-full font-bold text-sm hover:bg-accent-cyan hover:text-black transition-colors transform translate-y-4 group-hover/card:translate-y-0 duration-300">
+                    <div className="absolute inset-0 bg-black/50 opacity-0 group-hover/card:opacity-100 transition-opacity duration-300 flex items-center justify-center">
+                        <span className="px-3 py-1.5 bg-accent-cyan/90 text-black rounded-lg font-semibold text-[10px] uppercase tracking-widest transform scale-90 group-hover/card:scale-100 transition-transform duration-300">
                             View Details
                         </span>
                     </div>

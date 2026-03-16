@@ -118,12 +118,34 @@ const Home = () => {
         staleTime: 60 * 60 * 1000,
     });
 
+    // Fetch Comedy Movies
+    const { data: comedyData, isLoading: comedyLoading } = useQuery({
+        queryKey: ['movies', 'Comedy'],
+        queryFn: async () => {
+            const res = await fetch('/api/movies?genre=Comedy&limit=15&sortBy=popularity');
+            return res.json();
+        },
+        staleTime: 60 * 60 * 1000,
+    });
+
+    // Fetch War Movies
+    const { data: warData, isLoading: warLoading } = useQuery({
+        queryKey: ['movies', 'War'],
+        queryFn: async () => {
+            const res = await fetch('/api/movies?genre=War&limit=15&sortBy=popularity');
+            return res.json();
+        },
+        staleTime: 60 * 60 * 1000,
+    });
+
     const hasValidPoster = (m) => m && m.posterPath && m.posterPath !== "N/A" && typeof m.posterPath === 'string' && m.posterPath.trim() !== "";
 
     const trending = trendingData?.data && Array.isArray(trendingData.data) ? trendingData.data.filter(hasValidPoster) : [];
     const recommended = recData?.data && Array.isArray(recData.data) ? recData.data.filter(hasValidPoster) : [];
     const actionMovies = actionData?.data && Array.isArray(actionData.data) ? actionData.data.filter(hasValidPoster) : [];
     const romanceMovies = romanceData?.data && Array.isArray(romanceData.data) ? romanceData.data.filter(hasValidPoster) : [];
+    const comedyMovies = comedyData?.data && Array.isArray(comedyData.data) ? comedyData.data.filter(hasValidPoster) : [];
+    const warMovies = warData?.data && Array.isArray(warData.data) ? warData.data.filter(hasValidPoster) : [];
     
     const isLoading = trendingLoading || recLoading;
 
@@ -131,7 +153,7 @@ const Home = () => {
         <div className="bg-[#0A0E27] min-h-screen pb-20">
             <HeroSection movies={trending.slice(0, 10)} />
 
-            <div className="mt-[-100px] relative z-10">
+            <div className="mt-[-60px] relative z-10">
                 <Section title="Trending Now" movies={trending} layout="carousel" />
             </div>
 
@@ -195,8 +217,16 @@ const Home = () => {
                 <Section title="Action Packed" movies={actionMovies} layout="carousel" isLoading={actionLoading} />
             )}
 
+            {comedyMovies.length > 0 && (
+                <Section title="Comedy Picks" movies={comedyMovies} layout="carousel" isLoading={comedyLoading} />
+            )}
+
             {romanceMovies.length > 0 && (
                 <Section title="Romantic Favorites" movies={romanceMovies} layout="carousel" isLoading={romanceLoading} />
+            )}
+
+            {warMovies.length > 0 && (
+                <Section title="War & Epic Battles" movies={warMovies} layout="carousel" isLoading={warLoading} />
             )}
 
             <Section title="New Releases" movies={trending.slice().reverse()} layout="carousel" />

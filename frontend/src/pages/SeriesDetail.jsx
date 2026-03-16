@@ -2,11 +2,39 @@ import React, { useEffect, useState } from 'react';
 import { useParams } from 'react-router-dom';
 import Container from '../components/layout/Container';
 import MovieCard from '../components/movie/MovieCard';
-import { Star, Clock, Calendar, Play } from 'lucide-react';
+import { Star, Calendar, Play, User, BookmarkPlus, BookmarkCheck } from 'lucide-react';
 import { motion } from 'framer-motion';
+import { useSession } from '../context/SessionContext';
+
+const CastCard = ({ member }) => {
+    const [imgError, setImgError] = useState(false);
+    return (
+        <div className="flex-none w-24 text-center">
+            <div className="w-20 h-20 mx-auto rounded-full overflow-hidden bg-white/5 border border-white/10 mb-2">
+                {member.profile_path && !imgError ? (
+                    <img
+                        src={member.profile_path}
+                        alt={member.name}
+                        className="w-full h-full object-cover"
+                        onError={() => setImgError(true)}
+                    />
+                ) : (
+                    <div className="w-full h-full flex items-center justify-center text-gray-500">
+                        <User size={28} />
+                    </div>
+                )}
+            </div>
+            <p className="text-white text-[11px] font-semibold leading-tight truncate">{member.name}</p>
+            {member.character && (
+                <p className="text-gray-500 text-[10px] truncate mt-0.5">{member.character}</p>
+            )}
+        </div>
+    );
+};
 
 const SeriesDetail = () => {
     const { id } = useParams();
+    const { addToMyList, removeFromMyList, isInMyList } = useSession();
     const [series, setSeries] = useState(null);
     const [similar, setSimilar] = useState([]);
     const [loading, setLoading] = useState(true);
@@ -63,17 +91,22 @@ const SeriesDetail = () => {
     if (!series) return <div className="min-h-screen bg-[#0A0E27] flex items-center justify-center text-white">Series not found</div>;
 
     const posterUrl = series.posterPath || `https://placehold.co/400x600/1E1B4B/FFFFFF?text=${encodeURIComponent(series.title)}`;
+    const backdropUrl = series.posterPath ? series.posterPath.replace('w500', 'original') : posterUrl;
+
+    const credits = series.credits || {};
+    const cast = credits.cast || [];
+    const creator = credits.creator;
 
     const bgStyle = {
-        backgroundImage: `linear-gradient(to right, #0A0E27 20%, rgba(10, 14, 39, 0.8) 50%, rgba(10, 14, 39, 0.4)), url(${posterUrl})`
+        backgroundImage: `linear-gradient(to right, #0A0E27 30%, rgba(10, 14, 39, 0.85) 55%, rgba(10, 14, 39, 0.5)), url(${backdropUrl})`
     };
 
     return (
         <div className="bg-[#0A0E27] min-h-screen pb-20">
             {/* Hero Backdrop */}
-            <div className="relative h-[70vh] w-full bg-cover bg-top" style={bgStyle}>
-                <Container className="h-full flex items-center">
-                    <div className="grid md:grid-cols-[300px_1fr] gap-10 items-end pb-20">
+            <div className="relative h-[70vh] min-h-[520px] w-full bg-cover bg-top" style={bgStyle}>
+                <Container className="h-full flex items-end pt-14">
+                    <div className="grid md:grid-cols-[240px_1fr] gap-8 items-end pb-14 w-full">
                         {/* Poster */}
                         <motion.div
                             initial={{ opacity: 0, y: 50 }}
@@ -89,49 +122,89 @@ const SeriesDetail = () => {
                             animate={{ opacity: 1, x: 0 }}
                             className="max-w-2xl"
                         >
-                            <h1 className="text-4xl md:text-6xl font-bold text-white mb-4">{series.title}</h1>
+                            <h1 className="text-4xl md:text-5xl font-bold text-white mb-4">{series.title}</h1>
 
-                            <div className="flex flex-wrap items-center gap-6 text-gray-300 mb-8">
+                            <div className="flex flex-wrap items-center gap-4 text-gray-300 mb-4">
                                 <div className="flex items-center gap-2 text-yellow-500">
-                                    <Star fill="currentColor" size={20} />
-                                    <span className="font-bold text-lg">{series.rating ? series.rating.toFixed(1) : 'N/A'}</span>
+                                    <Star fill="currentColor" size={16} />
+                                    <span className="font-bold">{series.rating ? series.rating.toFixed(1) : 'N/A'}</span>
                                 </div>
-                                <div className="flex items-center gap-2">
-                                    <Calendar size={20} />
+                                <div className="flex items-center gap-2 text-sm">
+                                    <Calendar size={14} />
                                     <span>{series.year}</span>
                                 </div>
-                                <div className="px-3 py-1 border border-white/20 rounded-full text-sm">
+                                <div className="px-2 py-0.5 border border-white/20 rounded text-xs">
                                     {series.genres ? series.genres.join(', ') : 'TV Series'}
                                 </div>
                             </div>
 
-                            <p className="text-gray-300 text-lg mb-8 leading-relaxed line-clamp-4">
+                            {/* Creator */}
+                            {creator && (
+                                <div className="mb-4">
+                                    <span className="text-gray-500 text-xs uppercase tracking-wider">Creator / Producer</span>
+                                    <p className="text-white font-medium text-sm">{creator}</p>
+                                </div>
+                            )}
+
+                            <p className="text-gray-300 text-sm mb-6 leading-relaxed line-clamp-3">
                                 {series.description}
                             </p>
 
                             <div className="flex gap-4">
-                                <button className="flex items-center gap-2 px-8 py-3 bg-accent-cyan text-black font-bold rounded-lg hover:bg-cyan-300 transition-colors">
-                                    <Play size={20} fill="currentColor" />
-                                    Start Watching
-                                </button>
-                                <button className="px-8 py-3 bg-white/10 text-white font-bold rounded-lg hover:bg-white/20 transition-colors backdrop-blur-md">
-                                    + Watchlist
-                                </button>
+                                {isInMyList(series.movieId) ? (
+                                    <button
+                                        onClick={() => removeFromMyList(series.movieId)}
+                                        className="flex items-center gap-2 px-6 py-2.5 bg-accent-purple text-white text-sm font-semibold rounded-lg hover:bg-accent-purple/80 transition-colors"
+                                    >
+                                        <BookmarkCheck size={16} />
+                                        In My List
+                                    </button>
+                                ) : (
+                                    <button
+                                        onClick={() => addToMyList(series)}
+                                        className="flex items-center gap-2 px-6 py-2.5 bg-white/10 text-white text-sm font-semibold rounded-lg hover:bg-white/20 transition-colors backdrop-blur-md border border-white/10"
+                                    >
+                                        <BookmarkPlus size={16} />
+                                        Add to My List
+                                    </button>
+                                )}
                             </div>
                         </motion.div>
                     </div>
                 </Container>
             </div>
 
+            {/* Cast Section */}
+            {cast.length > 0 && (
+                <Container className="mt-10">
+                    <h2 className="text-xl font-bold text-white mb-5 border-l-4 border-accent-cyan pl-4">
+                        Cast & Crew
+                    </h2>
+                    <div className="flex gap-5 overflow-x-auto scrollbar-hide pb-4" style={{ scrollbarWidth: 'none' }}>
+                        {cast.map((member, i) => (
+                            <motion.div
+                                key={i}
+                                initial={{ opacity: 0, y: 10 }}
+                                whileInView={{ opacity: 1, y: 0 }}
+                                viewport={{ once: true }}
+                                transition={{ delay: i * 0.04 }}
+                            >
+                                <CastCard member={member} />
+                            </motion.div>
+                        ))}
+                    </div>
+                </Container>
+            )}
+
             {/* Episodes Section */}
-            <Container className="mt-12">
+            <Container className="mt-10">
                 <div className="flex items-center justify-between mb-6 border-b border-white/10 pb-4">
-                    <h2 className="text-2xl font-bold text-white">Episodes</h2>
+                    <h2 className="text-xl font-bold text-white">Episodes</h2>
 
                     <select
                         value={selectedSeason}
                         onChange={(e) => setSelectedSeason(parseInt(e.target.value))}
-                        className="bg-white/5 border border-white/10 rounded-lg px-4 py-2 text-white focus:outline-none focus:border-accent-purple"
+                        className="bg-white/5 border border-white/10 rounded-lg px-4 py-2 text-sm text-white focus:outline-none focus:border-accent-purple"
                     >
                         {[1, 2, 3, 4, 5, 6, 7, 8, 9, 10].map(n => (
                             <option key={n} value={n} className="text-black">Season {n}</option>
@@ -158,16 +231,16 @@ const SeriesDetail = () => {
                                         <div className="w-full h-full flex items-center justify-center text-gray-600 text-xs">No Image</div>
                                     )}
                                     <div className="absolute inset-0 flex items-center justify-center opacity-0 group-hover:opacity-100 bg-black/40 transition-opacity">
-                                        <Play fill="white" size={32} />
+                                        <Play fill="white" size={28} />
                                     </div>
                                 </div>
 
                                 <div className="flex-1">
                                     <div className="flex justify-between items-start mb-2">
-                                        <h3 className="font-bold text-white text-lg">
+                                        <h3 className="font-bold text-white">
                                             {ep.episode_number}. {ep.name}
                                         </h3>
-                                        <span className="text-sm text-gray-400">{ep.air_date}</span>
+                                        <span className="text-xs text-gray-400 ml-4 shrink-0">{ep.air_date}</span>
                                     </div>
                                     <p className="text-gray-400 text-sm line-clamp-2">{ep.overview}</p>
                                 </div>
@@ -181,12 +254,12 @@ const SeriesDetail = () => {
             </Container>
 
             {/* Recommendations */}
-            <Container className="mt-12">
-                <h2 className="text-2xl font-bold text-white mb-6 border-l-4 border-accent-purple pl-4">
+            <Container className="mt-10">
+                <h2 className="text-xl font-bold text-white mb-5 border-l-4 border-accent-purple pl-4">
                     Recommended Series
                 </h2>
                 {similar.length > 0 ? (
-                    <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-5 gap-6">
+                    <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-5 gap-5">
                         {similar.map(m => (
                             <MovieCard key={m.movieId} movie={m} />
                         ))}

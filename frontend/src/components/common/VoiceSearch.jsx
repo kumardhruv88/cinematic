@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { Mic, MicOff } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 
-const VoiceSearch = ({ onSearch, className = "" }) => {
+const VoiceSearch = ({ onSearch, className = "", iconSize = 16 }) => {
     const [isListening, setIsListening] = useState(false);
     const [isSupported, setIsSupported] = useState(false);
     const [recognition, setRecognition] = useState(null);
@@ -13,7 +13,7 @@ const VoiceSearch = ({ onSearch, className = "" }) => {
             const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
             const rec = new SpeechRecognition();
             rec.continuous = false;
-            rec.interimResults = false; // We only want final
+            rec.interimResults = false;
             rec.lang = 'en-US';
 
             rec.onstart = () => setIsListening(true);
@@ -48,35 +48,40 @@ const VoiceSearch = ({ onSearch, className = "" }) => {
 
     return (
         <button
-            type="button" // Prevent form submit
+            type="button"
             onClick={toggleListening}
             className={`
-                relative p-2 rounded-full transition-all duration-300
-                ${isListening ? 'bg-red-500/20 text-red-500' : 'hover:bg-white/10 text-gray-400 hover:text-white'}
+                relative flex items-center justify-center p-1.5 rounded-full transition-all duration-300
+                ${isListening ? 'bg-red-500/20 text-red-500' : 'hover:bg-white/10 text-gray-500 hover:text-white'}
                 ${className}
             `}
             title="Voice Search"
         >
             <AnimatePresence mode="wait">
                 {isListening ? (
-                    <motion.div
+                    <motion.span
                         key="listening"
                         initial={{ scale: 0.8 }}
-                        animate={{ scale: [1, 1.2, 1] }}
+                        animate={{ scale: [1, 1.15, 1] }}
                         transition={{ repeat: Infinity, duration: 1.5 }}
+                        style={{ display: 'flex', alignItems: 'center' }}
                     >
-                        <MicOff size={20} />
-                    </motion.div>
+                        <MicOff size={iconSize} />
+                    </motion.span>
                 ) : (
-                    <motion.div key="idle" initial={{ scale: 0.8 }} animate={{ scale: 1 }}>
-                        <Mic size={20} />
-                    </motion.div>
+                    <motion.span
+                        key="idle"
+                        initial={{ scale: 0.8 }}
+                        animate={{ scale: 1 }}
+                        style={{ display: 'flex', alignItems: 'center' }}
+                    >
+                        <Mic size={iconSize} />
+                    </motion.span>
                 )}
             </AnimatePresence>
 
-            {/* Ripple Effect for Listening */}
             {isListening && (
-                <span className="absolute inset-0 rounded-full animate-ping bg-red-500/20"></span>
+                <span className="absolute inset-0 rounded-full animate-ping bg-red-500/20" />
             )}
         </button>
     );

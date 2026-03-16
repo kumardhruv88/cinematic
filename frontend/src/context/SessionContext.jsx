@@ -19,9 +19,19 @@ export const SessionProvider = ({ children }) => {
         return stored ? JSON.parse(stored) : [];
     });
 
+    // myList stores full movie/series objects so we can render them without refetching
+    const [myList, setMyList] = useState(() => {
+        const stored = localStorage.getItem('cinematiq_mylist');
+        return stored ? JSON.parse(stored) : [];
+    });
+
     useEffect(() => {
         localStorage.setItem('cinematiq_watched', JSON.stringify(watchedMovies));
     }, [watchedMovies]);
+
+    useEffect(() => {
+        localStorage.setItem('cinematiq_mylist', JSON.stringify(myList));
+    }, [myList]);
 
     const addToHistory = (movieId) => {
         setWatchedMovies(prev => {
@@ -39,8 +49,30 @@ export const SessionProvider = ({ children }) => {
         });
     };
 
+    const addToMyList = (movie) => {
+        setMyList(prev => {
+            const exists = prev.some(m => m.movieId === movie.movieId);
+            if (exists) return prev;
+            return [movie, ...prev];
+        });
+    };
+
+    const removeFromMyList = (movieId) => {
+        setMyList(prev => prev.filter(m => m.movieId !== movieId));
+    };
+
+    const isInMyList = (movieId) => myList.some(m => m.movieId === movieId);
+
     return (
-        <SessionContext.Provider value={{ sessionId, watchedMovies, addToHistory }}>
+        <SessionContext.Provider value={{
+            sessionId,
+            watchedMovies,
+            addToHistory,
+            myList,
+            addToMyList,
+            removeFromMyList,
+            isInMyList
+        }}>
             {children}
         </SessionContext.Provider>
     );

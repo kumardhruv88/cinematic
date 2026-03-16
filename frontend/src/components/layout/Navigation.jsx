@@ -1,8 +1,9 @@
 import React, { useState, useEffect } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
-import { Search, Menu, X, Film } from 'lucide-react';
+import { Search, Menu, X, Film, Bookmark } from 'lucide-react';
 import Container from './Container';
 import VoiceSearch from '../common/VoiceSearch';
+import { useSession } from '../../context/SessionContext';
 
 const Navigation = () => {
     const [isOpen, setIsOpen] = useState(false);
@@ -10,6 +11,7 @@ const Navigation = () => {
     const [query, setQuery] = useState('');
     const [suggestions, setSuggestions] = useState([]);
     const navigate = useNavigate();
+    const { myList } = useSession();
 
     const handleSearch = (e) => {
         e.preventDefault();
@@ -70,25 +72,25 @@ const Navigation = () => {
     ];
 
     return (
-        <nav className="fixed top-0 left-0 right-0 z-50 bg-[#0A0E27]/80 backdrop-blur-md border-b border-white/5 h-20">
+        <nav className="fixed top-0 left-0 right-0 z-50 bg-[#0A0E27]/90 backdrop-blur-lg border-b border-white/5 h-14">
             <Container className="h-full flex items-center justify-between gap-4">
                 {/* Logo */}
                 <Link to="/" className="flex items-center gap-2 group shrink-0">
-                    <div className="w-10 h-10 bg-gradient-to-br from-accent-purple to-accent-cyan rounded-lg flex items-center justify-center text-white transform group-hover:rotate-12 transition-transform duration-300">
-                        <Film size={24} />
+                    <div className="w-7 h-7 bg-gradient-to-br from-accent-purple to-accent-cyan rounded-md flex items-center justify-center text-white transform group-hover:rotate-12 transition-transform duration-300">
+                        <Film size={14} />
                     </div>
-                    <span className="text-2xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-white to-gray-400 hidden sm:block">
+                    <span className="text-sm font-bold tracking-[0.2em] bg-clip-text text-transparent bg-gradient-to-r from-white to-gray-400 hidden sm:block uppercase">
                         CINEMATIQ
                     </span>
                 </Link>
 
                 {/* Desktop Menu */}
-                <div className="hidden md:flex items-center gap-8">
+                <div className="hidden md:flex items-center gap-6">
                     {navLinks.map((link) => (
                         <Link
                             key={link.name}
                             to={link.path}
-                            className="text-gray-300 hover:text-accent-cyan transition-colors text-sm font-medium uppercase tracking-wide"
+                            className="text-gray-400 hover:text-white transition-colors text-[11px] font-medium uppercase tracking-[0.15em]"
                         >
                             {link.name}
                         </Link>
@@ -96,17 +98,17 @@ const Navigation = () => {
                 </div>
 
                 {/* Search Bar */}
-                <div className="flex-1 max-w-md hidden md:block relative">
+                <div className="flex-1 max-w-xs hidden md:block relative">
                     <form onSubmit={handleSearch} className="relative">
                         <input
                             type="text"
                             placeholder="Search movies..."
-                            className="w-full bg-white/5 border border-white/10 rounded-full px-4 py-2 pl-10 pr-10 text-white focus:outline-none focus:border-accent-cyan transition-colors"
+                            className="w-full bg-white/5 border border-white/10 rounded-full px-4 py-1.5 pl-8 pr-9 text-xs text-white placeholder-gray-500 focus:outline-none focus:border-accent-cyan/50 transition-colors"
                             value={query}
                             onChange={(e) => setQuery(e.target.value)}
                         />
-                        <Search className="absolute left-3 top-2.5 text-gray-400" size={18} />
-                        <div className="absolute right-2 top-1.5">
+                        <Search className="absolute left-2.5 top-2 text-gray-500" size={14} />
+                        <div className="absolute right-1.5 top-1">
                             <VoiceSearch onSearch={handleVoiceSearch} />
                         </div>
                     </form>
@@ -131,50 +133,73 @@ const Navigation = () => {
                     )}
                 </div>
 
+                {/* My List Button - Desktop */}
+                <Link
+                    to="/mylist"
+                    className="hidden md:flex items-center gap-1.5 relative text-gray-400 hover:text-accent-cyan transition-colors shrink-0"
+                    title="My List"
+                >
+                    <Bookmark size={16} />
+                    <span className="text-[11px] font-medium uppercase tracking-[0.12em]">My List</span>
+                    {myList.length > 0 && (
+                        <span className="absolute -top-2 -right-2 w-4 h-4 bg-accent-cyan rounded-full text-[8px] font-bold text-black flex items-center justify-center">
+                            {myList.length > 9 ? '9+' : myList.length}
+                        </span>
+                    )}
+                </Link>
+
                 {/* Mobile Search & Menu Toggle */}
-                <div className="flex items-center gap-4 md:hidden">
-                    <button onClick={() => setShowSearch(!showSearch)} className="text-gray-300">
-                        <Search size={24} />
+                <div className="flex items-center gap-3 md:hidden">
+                    <button onClick={() => setShowSearch(!showSearch)} className="text-gray-400">
+                        <Search size={18} />
                     </button>
                     <button
-                        className="text-gray-300"
+                        className="text-gray-400"
                         onClick={() => setIsOpen(!isOpen)}
                     >
-                        {isOpen ? <X size={24} /> : <Menu size={24} />}
+                        {isOpen ? <X size={18} /> : <Menu size={18} />}
                     </button>
                 </div>
             </Container>
 
             {/* Mobile Search Bar */}
             {showSearch && (
-                <div className="md:hidden px-4 pb-4 bg-[#0A0E27]/95">
+                <div className="md:hidden px-4 pb-3 bg-[#0A0E27]/95">
                     <form onSubmit={handleSearch} className="relative">
                         <input
                             type="text"
                             placeholder="Search movies..."
-                            className="w-full bg-white/10 border border-white/10 rounded-lg px-4 py-3 pl-10 text-white focus:outline-none"
+                            className="w-full bg-white/10 border border-white/10 rounded-lg px-4 py-2 pl-8 text-sm text-white focus:outline-none"
                             value={query}
                             onChange={(e) => setQuery(e.target.value)}
                             autoFocus
                         />
-                        <Search className="absolute left-3 top-3.5 text-gray-400" size={20} />
+                        <Search className="absolute left-2.5 top-2.5 text-gray-400" size={14} />
                     </form>
                 </div>
             )}
 
             {/* Mobile Menu */}
             {isOpen && (
-                <div className="md:hidden absolute top-20 left-0 w-full bg-[#0A0E27] border-b border-white/5 p-5 flex flex-col gap-4 shadow-2xl">
+                <div className="md:hidden absolute top-14 left-0 w-full bg-[#0A0E27] border-b border-white/5 p-4 flex flex-col gap-3 shadow-2xl">
                     {navLinks.map((link) => (
                         <Link
                             key={link.name}
                             to={link.path}
-                            className="text-gray-300 hover:text-accent-cyan py-2 text-lg font-medium"
+                            className="text-gray-400 hover:text-white py-1.5 text-xs font-medium uppercase tracking-widest"
                             onClick={() => setIsOpen(false)}
                         >
                             {link.name}
                         </Link>
                     ))}
+                    <Link
+                        to="/mylist"
+                        className="flex items-center gap-2 text-gray-400 hover:text-accent-cyan py-1.5 text-xs font-medium uppercase tracking-widest"
+                        onClick={() => setIsOpen(false)}
+                    >
+                        <Bookmark size={13} />
+                        My List {myList.length > 0 && <span className="text-accent-cyan">({myList.length})</span>}
+                    </Link>
                 </div>
             )}
         </nav>
