@@ -76,21 +76,21 @@ const Navigation = () => {
             <Container className="h-full flex items-center justify-between gap-4">
                 {/* Logo */}
                 <Link to="/" className="flex items-center gap-2 group shrink-0">
-                    <div className="w-7 h-7 bg-gradient-to-br from-accent-purple to-accent-cyan rounded-md flex items-center justify-center text-white transform group-hover:rotate-12 transition-transform duration-300">
-                        <Film size={14} />
+                    <div className="w-6 h-6 bg-gradient-to-br from-[#7C3AED] to-[#22d3ee] rounded-md flex items-center justify-center text-white">
+                        <Film size={13} />
                     </div>
-                    <span className="text-sm font-bold tracking-[0.2em] bg-clip-text text-transparent bg-gradient-to-r from-white to-gray-400 hidden sm:block uppercase">
+                    <span className="text-[12px] font-bold tracking-[0.22em] text-white hidden sm:block uppercase">
                         CINEMATIQ
                     </span>
                 </Link>
 
-                {/* Desktop Menu */}
-                <div className="hidden md:flex items-center gap-6">
+                {/* Desktop Menu — light, thin, sharp uppercase */}
+                <div className="hidden md:flex items-center gap-7">
                     {navLinks.map((link) => (
                         <Link
                             key={link.name}
                             to={link.path}
-                            className="text-gray-400 hover:text-white transition-colors text-[11px] font-medium uppercase tracking-[0.15em]"
+                            className="text-gray-400 hover:text-white transition-colors text-[11px] font-normal uppercase tracking-[0.18em]"
                         >
                             {link.name}
                         </Link>
@@ -133,16 +133,15 @@ const Navigation = () => {
                     )}
                 </div>
 
-                {/* My List Button - Desktop */}
                 <Link
                     to="/mylist"
-                    className="hidden md:flex items-center gap-1.5 relative text-gray-400 hover:text-accent-cyan transition-colors shrink-0"
+                    className="hidden md:flex items-center gap-1.5 relative text-gray-400 hover:text-white transition-colors shrink-0"
                     title="My List"
                 >
-                    <Bookmark size={16} />
-                    <span className="text-[11px] font-medium uppercase tracking-[0.12em]">My List</span>
+                    <Bookmark size={15} />
+                    <span className="text-[11px] font-normal uppercase tracking-[0.18em]">My List</span>
                     {myList.length > 0 && (
-                        <span className="absolute -top-2 -right-2 w-4 h-4 bg-accent-cyan rounded-full text-[8px] font-bold text-black flex items-center justify-center">
+                        <span className="absolute -top-1.5 -right-2.5 w-4 h-4 bg-[#22d3ee] rounded-full text-[8px] font-bold text-black flex items-center justify-center">
                             {myList.length > 9 ? '9+' : myList.length}
                         </span>
                     )}

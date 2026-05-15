@@ -67,7 +67,7 @@ class APIService:
         try:
             url = f"{self.tmdb_base_url}/movie/{tmdb_id}"
             # Shorter timeout to prevent blocking, but enough for API
-            response = requests.get(url, headers=self.tmdb_headers, timeout=0.8) 
+            response = requests.get(url, headers=self.tmdb_headers, timeout=2)
             if response.status_code == 200:
                 data = response.json()
                 return {
@@ -107,7 +107,7 @@ class APIService:
             return {'cast': [], 'director': None}
         try:
             url = f"{self.tmdb_base_url}/movie/{int(tmdb_id)}/credits"
-            response = requests.get(url, headers=self.tmdb_headers, timeout=3)
+            response = requests.get(url, headers=self.tmdb_headers, timeout=2)
             if response.status_code == 200:
                 data = response.json()
                 cast_raw = data.get('cast', [])[:12]
@@ -170,17 +170,39 @@ class APIService:
             return None
 
         movie_data = row.iloc[0].to_dict()
-        movie_data = self.enrich_movie(movie_data)
-
-        # Fetch cast/credits via TMDB
         tmdb_id = movie_data.get('tmdbId')
-        if tmdb_id:
-            movie_data['credits'] = self.get_movie_credits(int(tmdb_id))
 
+        # ── Fetch TMDB metadata + credits IN PARALLEL ──────────
+        def _get_tmdb():   return self.fetch_tmdb_data(tmdb_id) if tmdb_id else {}
+        def _get_credits(): return self.get_movie_credits(int(tmdb_id)) if tmdb_id else {'cast': [], 'director': None, 'writer': None}
+
+        future_tmdb    = self.executor.submit(_get_tmdb)
+        future_credits = self.executor.submit(_get_credits)
+
+        tmdb_data = future_tmdb.result(timeout=3)
+        credits   = future_credits.result(timeout=3)
+
+        # Apply TMDB metadata
+        if tmdb_data.get('poster_path'):
+            movie_data['posterPath'] = "https://image.tmdb.org/t/p/w500" + tmdb_data['poster_path']
+        if tmdb_data.get('overview'):
+            movie_data['description'] = tmdb_data['overview']
+        if tmdb_data.get('vote_average'):
+            movie_data['rating'] = tmdb_data['vote_average']
+        if tmdb_data.get('runtime'):
+            movie_data['runtime'] = tmdb_data['runtime']
+
+        movie_data['credits'] = credits
         return movie_data
 
     def get_recommendations(self, watched_ids, top_n=20, genre=None):
-        if not self.hybrid_recommender.collaborative:
+        # Safely check if collaborative model is loaded
+        try:
+            has_model = bool(self.hybrid_recommender and self.hybrid_recommender.collaborative)
+        except Exception:
+            has_model = False
+
+        if not has_model:
             return self.get_trending(limit=top_n)
 
         # Detect preferred genres from watch history (for implicit genre boosting)

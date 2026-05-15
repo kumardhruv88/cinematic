@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import Navigation from './components/layout/Navigation';
 import Footer from './components/layout/Footer';
+import CineBot from './components/chat/CineBot';
 import Home from './pages/Home';
 import IntroScreen from './components/intro/IntroScreen';
 
@@ -32,7 +33,8 @@ function App() {
                     <div className="flex flex-col min-h-screen bg-[#0A0E27] text-white font-sans selection:bg-accent-cyan selection:text-black">
                         <Navigation />
 
-                        <main className="flex-grow">
+                        {/* pt-14 clears the fixed h-14 navbar globally for all pages */}
+                        <main className="flex-grow pt-14">
                             <Routes>
                                 <Route path="/" element={<Home />} />
                                 <Route path="/movies" element={<Movies />} />
@@ -46,6 +48,7 @@ function App() {
                         </main>
 
                         <Footer />
+                        <CineBot />
                     </div>
                 </Router>
             </SessionProvider>

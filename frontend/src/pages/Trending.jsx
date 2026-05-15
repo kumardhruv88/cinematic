@@ -15,18 +15,22 @@ const Trending = () => {
         staleTime: 5 * 60 * 1000,
     });
 
-    const movies = trendingData?.status === 'success' ? trendingData.data : [];
+    const movies = (trendingData?.status === 'success' ? trendingData.data : [])
+        .filter(movie => {
+            const img = movie.poster_url || movie.posterPath;
+            return img && img !== 'N/A' && !img.includes('null');
+        });
 
     return (
         <div className="pt-24 pb-20 min-h-screen bg-[#0A0E27]">
             <Container>
                 <div className="flex items-center gap-3 mb-8">
-                    <div className="p-3 bg-accent-purple/20 rounded-xl text-accent-purple">
-                        <TrendingUp size={32} />
+                    <div className="p-2.5 bg-accent-purple/20 rounded-xl text-accent-purple shadow-[0_0_15px_rgba(124,58,237,0.15)]">
+                        <TrendingUp size={20} />
                     </div>
                     <div>
-                        <h1 className="text-3xl md:text-4xl font-bold text-white mb-2">Trending Now</h1>
-                        <p className="text-gray-400">Top rated and most popular movies across the platform</p>
+                        <h1 className="text-xl font-semibold text-white/90 tracking-wider mb-0.5 antialiased">TRENDING NOW</h1>
+                        <p className="text-gray-400 text-[12px] font-light tracking-wide antialiased">Top rated and most popular across the platform</p>
                     </div>
                 </div>
 

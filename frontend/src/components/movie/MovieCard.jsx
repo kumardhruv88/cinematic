@@ -1,15 +1,14 @@
 import React, { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
-import { Star, PlayCircle } from 'lucide-react';
+import { Star } from 'lucide-react';
 import { Link } from 'react-router-dom';
 
 const MovieCard = ({ movie }) => {
-    // Fallback if no movie data
     if (!movie) return null;
 
-    const { movieId, title, year, rating, posterPath, tmdbId } = movie;
+    const { movieId, title, year, rating, posterPath } = movie;
 
-    const placeholderUrl = `https://placehold.co/300x450/1E1B4B/FFFFFF?text=${encodeURIComponent(title)}`;
+    const placeholderUrl = `https://placehold.co/300x450/111827/6B7280?text=${encodeURIComponent(title || 'Movie')}`;
     const [imgSrc, setImgSrc] = useState(posterPath || placeholderUrl);
 
     useEffect(() => {
@@ -17,45 +16,51 @@ const MovieCard = ({ movie }) => {
     }, [posterPath, title]);
 
     const linkPath = movie.type === 'tv' ? `/series/${movieId}` : `/movie/${movieId}`;
+    const displayRating = rating
+        ? (typeof rating === 'number' ? rating.toFixed(1) : rating)
+        : 'N/A';
 
     return (
-        <Link to={linkPath}>
+        <Link to={linkPath} className="block">
             <motion.div
-                className="group/card relative bg-[#1E1B4B]/30 rounded-xl overflow-hidden cursor-pointer"
-                whileHover={{ y: -10, transition: { duration: 0.3 } }}
+                className="group/card rounded-lg overflow-hidden cursor-pointer bg-[#111827]"
+                whileHover={{ y: -4, transition: { duration: 0.2 } }}
             >
-                {/* Poster Image */}
-                <div className="aspect-[2/3] w-full relative overflow-hidden">
+                {/* Poster — exact 2:3 ratio */}
+                <div className="relative w-full" style={{ paddingBottom: '150%' }}>
                     <img
                         src={imgSrc}
                         alt={title}
                         onError={() => setImgSrc(placeholderUrl)}
-                        className="w-full h-full object-cover transition-transform duration-500 group-hover/card:scale-110"
+                        className="absolute inset-0 w-full h-full object-cover transition-transform duration-400 group-hover/card:scale-105"
                         loading="lazy"
                     />
 
-                    {/* Overlay on Hover */}
-                    <div className="absolute inset-0 bg-black/50 opacity-0 group-hover/card:opacity-100 transition-opacity duration-300 flex items-center justify-center">
-                        <span className="px-3 py-1.5 bg-accent-cyan/90 text-black rounded-lg font-semibold text-[10px] uppercase tracking-widest transform scale-90 group-hover/card:scale-100 transition-transform duration-300">
-                            View Details
-                        </span>
-                    </div>
+                    {/* Hover tint */}
+                    <div className="absolute inset-0 bg-black/20 opacity-0 group-hover/card:opacity-100 transition-opacity duration-300 rounded-lg" />
 
-                    {/* Rating Badge */}
-                    <div className="absolute top-2 right-2 bg-black/60 backdrop-blur-md px-2 py-1 rounded-md flex items-center gap-1">
-                        <Star size={12} className="text-yellow-400 fill-yellow-400" />
-                        <span className="text-xs font-bold text-white">{rating ? rating.toFixed(1) : 'N/A'}</span>
+                    {/* Rating badge — top right, exact deployed style */}
+                    <div className="absolute top-2 right-2 flex items-center gap-1 bg-[#1a1f3a]/90 backdrop-blur-sm px-1.5 py-0.5 rounded border border-white/10">
+                        <Star size={9} className="text-yellow-400 fill-yellow-400" />
+                        <span className="text-[10px] font-bold text-white leading-none">{displayRating}</span>
                     </div>
                 </div>
 
-                {/* Content Info */}
-                <div className="p-4">
-                    <h3 className="text-white font-semibold truncate group-hover/card:text-accent-cyan transition-colors" title={title}>
+                {/* Card footer — matches deployed exactly */}
+                <div className="px-2 pt-2 pb-2.5">
+                    {/* Title: text-sm, font-bold, white, truncated */}
+                    <h3
+                        className="text-white text-[13px] font-bold leading-snug truncate group-hover/card:text-[#22d3ee] transition-colors"
+                        title={title}
+                    >
                         {title}
                     </h3>
-                    <div className="flex justify-between items-center mt-2 text-sm text-gray-400">
-                        <span>{year || 'Unknown'}</span>
-                        <span className="border border-gray-600 px-1 rounded text-[10px] uppercase">Movie</span>
+                    {/* Year left, MOVIE badge right */}
+                    <div className="flex justify-between items-center mt-1.5">
+                        <span className="text-gray-500 text-[11px] font-medium">{year || '—'}</span>
+                        <span className="border border-gray-600/70 text-gray-500 text-[9px] px-1.5 py-px rounded-sm uppercase tracking-widest font-medium">
+                            {movie.type === 'tv' ? 'SERIES' : 'MOVIE'}
+                        </span>
                     </div>
                 </div>
             </motion.div>

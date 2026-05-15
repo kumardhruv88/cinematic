@@ -2,6 +2,11 @@ from flask import Flask
 from flask_cors import CORS
 from api.routes import api_bp
 from config import Config
+from dotenv import load_dotenv
+import os
+
+# Load .env variables before anything else
+load_dotenv()
 
 def create_app(config_class=Config):
     app = Flask(__name__)
@@ -25,8 +30,6 @@ def create_app(config_class=Config):
     def health_check():
         return {'status': 'healthy', 'service': 'CINEMATIQ Backend'}
         
-    return app
-
     return app
 
 app = create_app()

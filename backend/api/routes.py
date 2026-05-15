@@ -1,5 +1,7 @@
 from flask import Blueprint, jsonify, request
 from .utils import APIService
+import os
+import requests as req_lib
 
 api_bp = Blueprint('api', __name__)
 
@@ -108,3 +110,106 @@ def get_season_details(tv_id, season_num):
     service = APIService.get_instance()
     episodes = service.get_series_season(tv_id, season_num)
     return jsonify({'status': 'success', 'data': episodes})
+
+# ──────────────────────────────────────────────
+# TRAILER  — fetch YouTube videos from TMDB
+# ──────────────────────────────────────────────
+@api_bp.route('/movie/<int:movie_id>/videos', methods=['GET'])
+def get_movie_videos(movie_id):
+    service = APIService.get_instance()
+    try:
+        url = f"{service.tmdb_base_url}/movie/{movie_id}/videos"
+        response = req_lib.get(url, headers=service.tmdb_headers, timeout=3)
+        if response.status_code == 200:
+            results = response.json().get('results', [])
+            # Prefer official trailers on YouTube
+            trailers = [v for v in results if v.get('site') == 'YouTube' and v.get('type') == 'Trailer']
+            teasers  = [v for v in results if v.get('site') == 'YouTube' and v.get('type') == 'Teaser']
+            videos   = trailers or teasers or [v for v in results if v.get('site') == 'YouTube']
+            return jsonify({'status': 'success', 'data': videos[:3]})
+    except Exception as e:
+        print(f"Error fetching videos: {e}")
+    return jsonify({'status': 'success', 'data': []})
+
+# ──────────────────────────────────────────────
+# WHERE TO WATCH  — streaming providers from TMDB
+# ──────────────────────────────────────────────
+@api_bp.route('/movie/<int:movie_id>/providers', methods=['GET'])
+def get_watch_providers(movie_id):
+    service = APIService.get_instance()
+    try:
+        url = f"{service.tmdb_base_url}/movie/{movie_id}/watch/providers"
+        response = req_lib.get(url, headers=service.tmdb_headers, timeout=3)
+        if response.status_code == 200:
+            results = response.json().get('results', {})
+            # Try IN (India) first, then US
+            region_data = results.get('IN') or results.get('US') or {}
+            providers = {
+                'flatrate': region_data.get('flatrate', []),   # Subscription (Netflix, Prime)
+                'rent':     region_data.get('rent', []),
+                'buy':      region_data.get('buy', []),
+                'link':     region_data.get('link', '')        # TMDB JustWatch deep link
+            }
+            return jsonify({'status': 'success', 'data': providers})
+    except Exception as e:
+        print(f"Error fetching providers: {e}")
+    return jsonify({'status': 'success', 'data': {}})
+
+# ──────────────────────────────────────────────
+# AI CHATBOT  — powered by Hugging Face
+# ──────────────────────────────────────────────
+@api_bp.route('/chat', methods=['POST'])
+def chat():
+    data = request.json or {}
+    user_message = data.get('message', '').strip()
+    if not user_message:
+        return jsonify({'status': 'success', 'reply': 'Please type a movie question! 🎬'})
+
+    from dotenv import load_dotenv
+    load_dotenv(override=True)
+    hf_token = os.environ.get('HF_TOKEN', '')
+
+    # Check for missing or placeholder key
+    if not hf_token or 'your_' in hf_token or len(hf_token) < 10:
+        return jsonify({
+            'status': 'success',
+            'reply': "🎬 I'm CineBot! To enable AI responses, add a free Hugging Face token to backend/.env:\n\nHF_TOKEN=hf_your_token_here\n\nGet one instantly at: huggingface.co/settings/tokens"
+        })
+
+    try:
+        from huggingface_hub import InferenceClient
+        client = InferenceClient(api_key=hf_token)
+        
+        system_prompt = (
+            "You are CineBot, an expert AI movie and TV assistant for CINEMATIQ. "
+            "Answer ONLY questions about movies, TV shows, directors, actors, genres, and recommendations. "
+            "Be concise (max 3-4 sentences), friendly, and enthusiastic about cinema. "
+            "If asked about anything unrelated to movies/TV, politely redirect to cinema topics. "
+            "When recommending movies, always include the year in brackets e.g. The Godfather (1972)."
+        )
+
+        # Qwen 2.5 72B is incredibly smart, natively supports chat_completion, and doesn't hallucinate
+        response = client.chat_completion(
+            model="Qwen/Qwen2.5-72B-Instruct",
+            messages=[
+                {"role": "system", "content": system_prompt},
+                {"role": "user", "content": user_message}
+            ],
+            max_tokens=250,
+            temperature=0.7
+        )
+        
+        reply = response.choices[0].message.content.strip()
+        return jsonify({'status': 'success', 'reply': reply})
+
+    except Exception as e:
+        err_msg = str(e).lower()
+        print(f"[CineBot] HF Error: {e}")
+        
+        if "unauthorized" in err_msg or "invalid token" in err_msg:
+            return jsonify({'status': 'success', 'reply': "⚠️ Your Hugging Face token seems invalid. Please check backend/.env 🎬"})
+        elif "loading" in err_msg or "starting" in err_msg:
+            return jsonify({'status': 'success', 'reply': "⏳ The AI model is waking up! Please try asking again in 20 seconds. 🍿"})
+        else:
+            return jsonify({'status': 'success', 'reply': "Connection error — make sure you are connected to the internet! 🎬"})
+
